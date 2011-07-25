@@ -6,8 +6,10 @@ var Sudoku = (function() {
 		matrix = new Array(9);
 		for (var i=0; i<matrix.length; i++) {
 			matrix[i] = new Array(9);
+			for (var j=0; j<matrix[i].length; j++) {
+				matrix[i][j] = "";
+			}
 		}
-		populateMatrix();
 	};
 	
 	var populateMatrix = function() {
@@ -21,6 +23,7 @@ var Sudoku = (function() {
 					if(isValid(i, j, num)) {
 						matrix[i][j] = num;
 						found = true;
+						updateBoard();
 						break;
 					} else {
 						found = false;
@@ -29,6 +32,7 @@ var Sudoku = (function() {
 				}
 				if(!found) {
 					matrix[i][j] = undefined;
+					updateBoard();
 					possibles[i][j] = [1,2,3,4,5,6,7,8,9];
 					j -= 2;
 				}
@@ -124,7 +128,6 @@ var Sudoku = (function() {
 			if(arr[i] === val && val !== undefined) {
 				found = true;
 				break;
-				console.log("Matched "+arr[i] + " with "+val);
 			}
 		}
 		return found;
