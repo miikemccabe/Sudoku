@@ -1,10 +1,15 @@
-var Sudoku = (function() {
-
+var Grid = function() {
+	
 	var matrix;
+	
+	var init = function() {
+		createMatrix();
+		populateMatrix();
+	}
 	
 	var createMatrix = function() {
 		matrix = new Array(9);
-		for (var i=0; i<matrix.length; i++) {
+		for (var i=0; i< matrix.length; i++) {
 			matrix[i] = new Array(9);
 			for (var j=0; j<matrix[i].length; j++) {
 				matrix[i][j] = "";
@@ -23,7 +28,6 @@ var Sudoku = (function() {
 					if(isValid(i, j, num)) {
 						matrix[i][j] = num;
 						found = true;
-						updateBoard();
 						break;
 					} else {
 						found = false;
@@ -31,14 +35,17 @@ var Sudoku = (function() {
 					}
 				}
 				if(!found) {
-					matrix[i][j] = undefined;
-					updateBoard();
+					matrix[i][j] = "";
 					possibles[i][j] = [1,2,3,4,5,6,7,8,9];
 					j -= 2;
 				}
 			}
 		}
 	}	
+	
+	var getCell = function(row, column) {
+		return matrix[row][column];
+	}
 	
 	var generatePossibleNumbersArray = function() {
 		var possibles = new Array(9);
@@ -49,25 +56,6 @@ var Sudoku = (function() {
 			}
 		}
 		return possibles;
-	}
-	
-	var getPossibleValues = function () {
-		var possibles = new Array(9);
-		for (var i=0; i<9; i++) {
-			possibles[i] = new Array(9);
-			for (var j=0; j< possibles[i].length; j++) {
-				if(matrix[i][j] === undefined) {
-					var possible = [1,2,3,4,5,6,7,8,9];
-					var valid = false;
-					while(!valid && possible.length > 0) {
-						possible.shift();
-						valid = isValid(i, j, possible[0])
-					}				
-					possibles[i][j] = possible;	
-				}
-			}
-		}
-		console.log(possibles[1][8]);
 	}
 	
 	var getRow = function(index) {
@@ -133,6 +121,26 @@ var Sudoku = (function() {
 		return found;
 	}
 	
+	var randomNum = function() {
+		return Math.floor(Math.random() * 9 + 1);
+	}
+	
+	return {
+		init : init,
+		getCell : getCell
+	}
+	
+}
+
+var Sudoku = (function() {
+
+	var grid;
+	
+	var init = function() {
+		grid = new Grid();
+		grid.init();
+	};
+		
 	var createBoard = function() {
 		var body = document.getElementsByTagName("body")[0];
 		var input;
@@ -151,39 +159,21 @@ var Sudoku = (function() {
 				}
 			}
 		}
-		updateBoard();
 	}
 	
 	var updateBoard = function() {
 		for (var i=0; i<9; i++) {
 			for (var j=0; j<9; j++) {
 				var input = document.getElementById("cell"+i+j);
-				input.value = matrix[i][j];
+				input.value = grid.getCell(i, j);
 			}
 		}
 	}
 	
-	var randomNum = function() {
-		return Math.floor(Math.random() * 9 + 1);
-	}
-	
-	var shuffle = function(sourceArray) {
-    for (var n = 0; n < sourceArray.length - 1; n++) {
-        var k = n + Math.floor(Math.random() * (sourceArray.length - n));
-
-        var temp = sourceArray[k];
-        sourceArray[k] = sourceArray[n];
-        sourceArray[n] = temp;
-    }
-	}
-	
 	return {
-		createMatrix : createMatrix,
-		populateMatrix : populateMatrix,
+		init : init,
 		createBoard : createBoard,
-		updateBoard : updateBoard,
-		getPos : getPossibleValues,
-		inGrid : inGrid
+		updateBoard : updateBoard
 	};
 
 })();
