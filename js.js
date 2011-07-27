@@ -1,4 +1,4 @@
-var Grid = function() {
+var Matrix = function() {
 	
 	var matrix;
 	
@@ -12,21 +12,32 @@ var Grid = function() {
 		for (var i=0; i< matrix.length; i++) {
 			matrix[i] = new Array(9);
 			for (var j=0; j<matrix[i].length; j++) {
-				matrix[i][j] = "";
+				matrix[i][j] = {
+					value : undefined,
+					visited : false,
+					possibles : [1,2,3,4,5,6,7,8,9],
+					immutable : false,
+					reset : function() {
+						this.value = undefined;
+						this.visited = false;
+						this.possibles = [1,2,3,4,5,6,7,8,9];
+						this.immutable = false;
+					}
+				};
 			}
 		}
+		return matrix;
 	};
 	
 	var populateMatrix = function() {
-		var possibles = generatePossibleNumbersArray();
 		for(var i=0; i< matrix.length; i++) {
 			for(var j=0; j< matrix[i].length; j++) {
 				var found = false;
-				while(possibles[i][j].length > 0) {
-					var rnd = Math.floor(Math.random() * possibles[i][j].length);
-					var num = possibles[i][j].splice(rnd, 1)[0];
+				while(matrix[i][j].possibles.length > 0) {
+					var rnd = Math.floor(Math.random() * matrix[i][j].possibles.length);
+					var num = matrix[i][j].possibles.splice(rnd, 1)[0];
 					if(isValid(i, j, num)) {
-						matrix[i][j] = num;
+						matrix[i][j].value = num;
 						found = true;
 						break;
 					} else {
@@ -35,27 +46,16 @@ var Grid = function() {
 					}
 				}
 				if(!found) {
-					matrix[i][j] = "";
-					possibles[i][j] = [1,2,3,4,5,6,7,8,9];
+					matrix[i][j].reset();
 					j -= 2;
 				}
 			}
 		}
+		return matrix;
 	}	
 	
 	var getCell = function(row, column) {
-		return matrix[row][column];
-	}
-	
-	var generatePossibleNumbersArray = function() {
-		var possibles = new Array(9);
-		for(var i=0; i<possibles.length; i++) {
-			possibles[i] = new Array(9);
-			for(var j=0; j< possibles[i].length; j++) {
-				possibles[i][j] = [1,2,3,4,5,6,7,8,9];
-			}
-		}
-		return possibles;
+		return matrix[row][column].value;
 	}
 	
 	var getRow = function(index) {
@@ -91,7 +91,7 @@ var Grid = function() {
 		
 		for (var i=x; i < x+3; i++) {
 			for (var j=y; j < y+3; j++) {
-				if(matrix[i][j] === val) {
+				if(matrix[i][j].value === val) {
 					found = true;
 				}
 			}
@@ -113,7 +113,7 @@ var Grid = function() {
 		var found = false;
 		var length = arr.length;
 		for (var i=0; i< length; i++) {
-			if(arr[i] === val && val !== undefined) {
+			if(arr[i].value === val && val !== undefined) {
 				found = true;
 				break;
 			}
@@ -123,6 +123,29 @@ var Grid = function() {
 	
 	var randomNum = function() {
 		return Math.floor(Math.random() * 9 + 1);
+	}
+	
+	return {
+		init : init,
+		create : createMatrix,
+		populate : populateMatrix,
+		getCell : getCell
+	}
+	
+}
+
+var Grid = function() {
+	
+	var matrix;
+	
+	var init = function() {
+		matrix = new Matrix();
+		matrix.init();
+		return matrix;
+	}
+	
+	var getCell = function(row, col) {
+		return matrix.getCell(row, col);
 	}
 	
 	return {
