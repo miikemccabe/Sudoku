@@ -14,12 +14,10 @@ var Matrix = function() {
 			for (var j=0; j<matrix[i].length; j++) {
 				matrix[i][j] = {
 					value : undefined,
-					visited : false,
 					possibles : [1,2,3,4,5,6,7,8,9],
 					immutable : false,
 					reset : function() {
 						this.value = undefined;
-						this.visited = false;
 						this.possibles = [1,2,3,4,5,6,7,8,9];
 						this.immutable = false;
 					}
@@ -53,6 +51,16 @@ var Matrix = function() {
 		}
 		return matrix;
 	}	
+	
+	var resetMatrix = function() {
+		for (var i=0; i<9; i++) {
+			for (var j=0; j<9; j++) {
+				var input = document.getElementById("cell"+i+j);
+				input.value = "";
+				matrix[i][j].reset();
+			}
+		}
+	}
 	
 	var getCell = function(row, column) {
 		return matrix[row][column].value;
@@ -129,7 +137,8 @@ var Matrix = function() {
 		init : init,
 		create : createMatrix,
 		populate : populateMatrix,
-		getCell : getCell
+		getCell : getCell,
+		reset : resetMatrix
 	}
 	
 }
@@ -141,30 +150,11 @@ var Grid = function() {
 	var init = function() {
 		matrix = new Matrix();
 		matrix.init();
-		return matrix;
+		createGrid();
+		updateGrid();
 	}
-	
-	var getCell = function(row, col) {
-		return matrix.getCell(row, col);
-	}
-	
-	return {
-		init : init,
-		getCell : getCell
-	}
-	
-}
-
-var Sudoku = (function() {
-
-	var grid;
-	
-	var init = function() {
-		grid = new Grid();
-		grid.init();
-	};
 		
-	var createBoard = function() {
+	var createGrid = function() {
 		var body = document.getElementsByTagName("body")[0];
 		var input;
 		for (var i=0; i<9; i++) {
@@ -184,19 +174,46 @@ var Sudoku = (function() {
 		}
 	}
 	
-	var updateBoard = function() {
+	var updateGrid = function() {
 		for (var i=0; i<9; i++) {
 			for (var j=0; j<9; j++) {
 				var input = document.getElementById("cell"+i+j);
-				input.value = grid.getCell(i, j);
+				input.value = matrix.getCell(i, j);
 			}
 		}
 	}
 	
+	var resetGrid = function() {
+		matrix.reset();
+		matrix.init();
+		updateGrid();
+	}
+	
 	return {
 		init : init,
-		createBoard : createBoard,
-		updateBoard : updateBoard
+		create : createGrid,
+		update : updateGrid,
+		reset : resetGrid
+	}
+	
+}
+
+var Sudoku = (function() {
+
+	var grid;
+	
+	var newSudoku = function() {
+		if(!grid) {
+			grid = new Grid();
+			grid.init();
+		} else {
+			grid.reset();
+			grid.update();
+		}
+	}
+	
+	return {
+		newSudoku : newSudoku
 	};
 
 })();
