@@ -14,7 +14,6 @@ test("create()", function() {
 
 test("populate()", function() {
 	var theMatrix = this.matrix.create();
-	console.log(theMatrix[0][0]);
 	ok(this.matrix.populate(), 'Populate the matrix');
 	var firstCell = this.matrix.getCell(0,0);
 	ok(firstCell >= 1 && firstCell <=9, 'Expected the 1st cell value to be between 1 and 9, it was ' + firstCell);

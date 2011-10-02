@@ -36,7 +36,12 @@ var Matrix = function() {
 				}
 				if(!found) {
 					matrix[i][j].reset();
-					j -= 2;
+					if(j - 2 < 0) {
+						j=0;
+						i = i - 2 < 0 ? 0 : i-2;
+					} else {
+						j -= 2;
+					}
 				}
 			}
 		}
@@ -46,8 +51,6 @@ var Matrix = function() {
 	var resetMatrix = function() {
 		for (var i=0; i<9; i++) {
 			for (var j=0; j<9; j++) {
-				var input = document.getElementById("cell"+i+j);
-				input.value = "";
 				matrix[i][j].reset();
 			}
 		}
@@ -136,8 +139,8 @@ var Matrix = function() {
 
 var Cell = function() {
 	this.value = undefined;
-	this.possibles = [1,2,3,4,5,6,7,8,9],
-	this.immutable = false
+	this.possibles = [1,2,3,4,5,6,7,8,9];
+	this.immutable = false;
 	this.reset = function() {
 		this.value = undefined;
 		this.possibles = [1,2,3,4,5,6,7,8,9];
