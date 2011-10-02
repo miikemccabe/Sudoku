@@ -12,16 +12,7 @@ var Matrix = function() {
 		for (var i=0; i< matrix.length; i++) {
 			matrix[i] = new Array(9);
 			for (var j=0; j<matrix[i].length; j++) {
-				matrix[i][j] = {
-					value : undefined,
-					possibles : [1,2,3,4,5,6,7,8,9],
-					immutable : false,
-					reset : function() {
-						this.value = undefined;
-						this.possibles = [1,2,3,4,5,6,7,8,9];
-						this.immutable = false;
-					}
-				};
+				matrix[i][j] = new Cell();
 			}
 		}
 		return matrix;
@@ -141,6 +132,17 @@ var Matrix = function() {
 		reset : resetMatrix
 	}
 	
+}
+
+var Cell = function() {
+	this.value = undefined;
+	this.possibles = [1,2,3,4,5,6,7,8,9],
+	this.immutable = false
+	this.reset = function() {
+		this.value = undefined;
+		this.possibles = [1,2,3,4,5,6,7,8,9];
+		this.immutable = false;
+	}	
 }
 
 var Grid = function() {
