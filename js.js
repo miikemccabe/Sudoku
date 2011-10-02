@@ -19,8 +19,15 @@ var Matrix = function() {
 	};
 	
 	var populateMatrix = function() {
+		var attempts = 0;
 		for(var i=0; i< matrix.length; i++) {
 			for(var j=0; j< matrix[i].length; j++) {
+				if(attempts === 1) { // If we've failed to do it in one go start again from scratch
+					resetMatrix();
+					attempts = 0;
+					i=0;
+					j=0;
+				}
 				var found = false;
 				while(matrix[i][j].possibles.length > 0) {
 					var rnd = Math.floor(Math.random() * matrix[i][j].possibles.length);
@@ -37,20 +44,24 @@ var Matrix = function() {
 				if(!found) {
 					matrix[i][j].reset();
 					if(j - 2 < 0) {
-						j=0;
+						j = 0;
 						i = i - 2 < 0 ? 0 : i-2;
+						if(i === 0) {
+							attempts++;
+						}
 					} else {
 						j -= 2;
 					}
 				}
+				console.log(attempts);
 			}
 		}
 		return matrix;
 	}	
 	
 	var resetMatrix = function() {
-		for (var i=0; i<9; i++) {
-			for (var j=0; j<9; j++) {
+		for (var i=0; i<matrix.length; i++) {
+			for (var j=0; j<matrix.length; j++) {
 				matrix[i][j].reset();
 			}
 		}
