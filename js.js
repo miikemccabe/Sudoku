@@ -53,7 +53,6 @@ var Matrix = function() {
 						j -= 2;
 					}
 				}
-				console.log(attempts);
 			}
 		}
 		return matrix;
@@ -162,6 +161,7 @@ var Cell = function() {
 var Grid = function() {
 	
 	var matrix;
+	var grid;
 	
 	var init = function() {
 		matrix = new Matrix();
@@ -172,6 +172,8 @@ var Grid = function() {
 		
 	var createGrid = function() {
 		var body = document.getElementsByTagName("body")[0];
+		grid = document.createElement('div');
+		grid.setAttribute('id', 'grid');
 		var input;
 		for (var i=0; i<9; i++) {
 			for (var j=0; j<9; j++) {
@@ -182,12 +184,13 @@ var Grid = function() {
 				input.style.width = "20px";
 				input.style.height = "20px";
 				input.style.margin = "1px";
-				document.getElementsByTagName('body')[0].appendChild(input);
+				grid.appendChild(input);
 				if((j+1) % 9 === 0) {
-					document.getElementsByTagName('body')[0].appendChild(br);
+					grid.appendChild(br);
 				}
 			}
 		}
+		body.appendChild(grid);
 	}
 	
 	var updateGrid = function() {
@@ -229,7 +232,7 @@ var Sudoku = (function() {
 	}
 	
 	return {
-		newSudoku : newSudoku
+		new : newSudoku
 	};
 
 })();
