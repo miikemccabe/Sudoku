@@ -160,14 +160,15 @@ var Cell = function() {
 
 var Grid = function() {
 	
-	var matrix;
 	var grid;
 	
 	var init = function() {
-		matrix = new Matrix();
-		matrix.init();
 		createGrid();
-		updateGrid();
+		if(grid !== undefined) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 		
 	var createGrid = function() {
@@ -191,9 +192,22 @@ var Grid = function() {
 			}
 		}
 		body.appendChild(grid);
+		return grid;
 	}
 	
-	var updateGrid = function() {
+	var getValues = function() {
+		var values = new Array(9);
+		for (var i=0; i<9; i++) {
+			for (var j=0; j<9; j++) {
+				values[i] = new Array(9);
+				var input = document.getElementById("cell"+i+j);
+				values[i][j] = input.value;
+			}
+		}		
+		return values;
+	}
+	
+	var updateGrid = function(matrix) {
 		for (var i=0; i<9; i++) {
 			for (var j=0; j<9; j++) {
 				var input = document.getElementById("cell"+i+j);
@@ -203,8 +217,6 @@ var Grid = function() {
 	}
 	
 	var resetGrid = function() {
-		matrix.reset();
-		matrix.init();
 		updateGrid();
 	}
 	
@@ -212,6 +224,7 @@ var Grid = function() {
 		init : init,
 		create : createGrid,
 		update : updateGrid,
+		getValues : getValues,
 		reset : resetGrid
 	}
 	
@@ -219,20 +232,20 @@ var Grid = function() {
 
 var Sudoku = (function() {
 
+	var matrix;
 	var grid;
 	
-	var newSudoku = function() {
-		if(!grid) {
-			grid = new Grid();
-			grid.init();
-		} else {
-			grid.reset();
-			grid.update();
-		}
+	var newBoard = function() {
+		grid = new Grid();
+		grid.init();
+	}
+	
+	var newGame = function() {
+		
 	}
 	
 	return {
-		new : newSudoku
+		createBoard : newBoard
 	};
 
 })();
